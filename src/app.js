@@ -1,6 +1,7 @@
+// @ts-check
 const yargs = require('yargs');
-
-console.log(chalk.blue.inverse('Success!'));
+const chalk = require('chalk');
+const { addNote } = require('./notes');
 
 /**
  * add a new note command
@@ -8,8 +9,25 @@ console.log(chalk.blue.inverse('Success!'));
 yargs.command({
   command: 'add',
   describe: 'Add a new note',
-  handler: () => {
-    console.log('adding a new note!');
+  builder: {
+    title: {
+      describe: 'Note title',
+      demandOption: true,
+      type: 'string',
+    },
+    body: {
+      describe: 'Note body',
+      demandOption: true,
+      type: 'string',
+    },
+  },
+  handler: (argv) => {
+    const { title, body } = argv;
+    if (addNote(title, body)) {
+      console.log(chalk.greenBright.inverse('Note added successfully!'));
+    } else {
+      console.log(chalk.redBright.inverse('Note title taken!'));
+    }
   },
 });
 
@@ -46,4 +64,4 @@ yargs.command({
   },
 });
 
-console.log(yargs.argv);
+yargs.parse();
