@@ -21,7 +21,8 @@ const fs = require('fs');
 const addNote = (title, body) => {
   try {
     const allNotes = getNotes();
-    if (checkForDuplicates(allNotes, title)) {
+    const duplicateNote = allNotes.find((note) => note.title === title);
+    if (duplicateNote) {
       return false;
     }
     const newNote = {
@@ -55,6 +56,20 @@ const removeNote = (title) => {
 };
 
 /**
+ * read an existing note by its unique title
+ * @param {string} title - note title
+ * @returns {Note|undefined}
+ */
+const readNote = (title) => {
+  try {
+    const allNotes = getNotes();
+    return allNotes.find((note) => note.title === title);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
  * save an array of notes to notes.json file
  * @param {Note[]} notes - array of all notes
  * @returns {void}
@@ -66,17 +81,6 @@ const saveNotes = (notes) => {
   } catch (error) {
     console.log(error);
   }
-};
-
-/**
- * check if the array of notes contains a note with the same title
- * @param {Note[]} notes - notes array
- * @param {string} title - new note's title
- * @returns {boolean} true if there is duplicates
- */
-const checkForDuplicates = (notes, title) => {
-  const duplicateNotes = notes.filter((note) => note.title === title);
-  return duplicateNotes.length > 0;
 };
 
 /**
@@ -94,4 +98,4 @@ const getNotes = () => {
   }
 };
 
-module.exports = { addNote, removeNote };
+module.exports = { addNote, removeNote, getNotes, readNote };
