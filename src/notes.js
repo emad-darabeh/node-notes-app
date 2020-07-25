@@ -3,6 +3,7 @@
  * Notes module
  * @module note
  */
+const fs = require('fs');
 
 /**
  * A note
@@ -10,8 +11,6 @@
  * @property {string} title - note title
  * @property {string} body - note body
  */
-
-const fs = require('fs');
 
 /**
  * add a new note to the list of notes
@@ -30,6 +29,24 @@ const addNote = (title, body) => {
       body,
     };
     allNotes.push(newNote);
+    saveNotes(allNotes);
+    return true;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+/**
+ * remove an existing note by its unique title
+ * @param {string} title - note title
+ * @returns {boolean} true if the note has been deleted successfully
+ */
+const removeNote = (title) => {
+  try {
+    const allNotes = getNotes();
+    const noteIndex = allNotes.findIndex((note) => note.title === title);
+    if (noteIndex === -1) return false;
+    allNotes.splice(noteIndex, 1);
     saveNotes(allNotes);
     return true;
   } catch (error) {
@@ -77,4 +94,4 @@ const getNotes = () => {
   }
 };
 
-module.exports = { addNote };
+module.exports = { addNote, removeNote };

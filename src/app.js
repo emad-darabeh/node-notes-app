@@ -1,7 +1,7 @@
 // @ts-check
 const yargs = require('yargs');
 const chalk = require('chalk');
-const { addNote } = require('./notes');
+const { addNote, removeNote } = require('./notes');
 
 /**
  * add a new note command
@@ -21,7 +21,7 @@ yargs.command({
       type: 'string',
     },
   },
-  handler: (argv) => {
+  handler(argv) {
     const { title, body } = argv;
     if (addNote(title, body)) {
       console.log(chalk.greenBright.inverse('Note added successfully!'));
@@ -37,8 +37,20 @@ yargs.command({
 yargs.command({
   command: 'remove',
   describe: 'Remove an existing note',
-  handler: () => {
-    console.log('removing an existing note!');
+  builder: {
+    title: {
+      describe: 'Note title',
+      demandOption: true,
+      type: 'string',
+    },
+  },
+  handler(argv) {
+    const { title } = argv;
+    if (removeNote(title)) {
+      console.log(chalk.greenBright.inverse('Note removed successfully!'));
+    } else {
+      console.log(chalk.redBright.inverse('Note does not exist!'));
+    }
   },
 });
 
@@ -48,7 +60,7 @@ yargs.command({
 yargs.command({
   command: 'read',
   describe: 'Read an existing note',
-  handler: () => {
+  handler() {
     console.log('reading an existing note!');
   },
 });
@@ -59,7 +71,7 @@ yargs.command({
 yargs.command({
   command: 'list',
   describe: 'List all notes',
-  handler: () => {
+  handler() {
     console.log('listing out all notes!');
   },
 });
